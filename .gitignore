@@ -1,3 +1,4 @@
 *.log
-
+deeplearn/data/*
 .git
+*.pth
