@@ -1,6 +1,6 @@
 import torch
 import matplotlib.pyplot as plt
-
+import time
 # 使用torch写的线性回归，可控制的内容更多
 
 
@@ -66,16 +66,21 @@ bias = model.linear.bias.item()
 print(f"训练后的权重: {weight:.2f}, 偏置: {bias:.2f}")
 print(f"真实权重: {true_weight}, 真实偏置: {true_bias}")
 
+
 # 绘制拟合直线
 predicted = model(X).detach().numpy()
 plt.scatter(X.numpy(), y.numpy(), label='原始数据')
 plt.plot(X.numpy(), predicted, 'g-', label='模型预测')
 plt.legend()
-plt.show()
+plt.savefig('prediction_plot.png', dpi=300, bbox_inches='tight')  # 保存为高清图片
+plt.close()  # 关闭图形释放内存
+# plt.show()
 
 # 绘制损失下降曲线
 plt.plot(loss_history)
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
 plt.title('loss变化')
-plt.show()
+plt.savefig('loss_curve.png', dpi=300)
+plt.close()
+# plt.show()
