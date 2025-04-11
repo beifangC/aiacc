@@ -11,10 +11,13 @@ from torch.optim.lr_scheduler import CosineAnnealingLR
 # 构建训练函数
 def train(model, optimizer, train_loader,scheduler=None, config=MASTER_CONFIG, print_logs=False):
     start_time = time.time()
+    total_set=len(train_loader)
+    if scheduler:
+        print('scheduler on')
     for step, (X, Y) in enumerate(train_loader):
         optimizer.zero_grad()
-        xs = X.to(device)
-        ys = Y.to(device)
+        xs = X.to(device=device)
+        ys = Y.to(device=device)
 
         logits, loss = model(xs, targets=ys)
 
@@ -29,7 +32,7 @@ def train(model, optimizer, train_loader,scheduler=None, config=MASTER_CONFIG, p
         if step % config['log_interval'] == 0:
             batch_time = time.time() - start_time
             if print_logs:
-                print(f"Epoch {1} | val loss {loss:.3f} | Time {batch_time:.3f}")
+                print(f"Epoch {1} | Step {step}/{total_set} | val loss {loss:.3f} | Time {batch_time:.3f}")
             start_time = time.time()
 
         # if scheduler:
@@ -57,7 +60,7 @@ if __name__=='__main__':
         shuffle=False,
     )
     T_max = 30000  # 周期长度（总epoch数或step数）
-    eta_min = 0.001  # 最低学习率η_min
+    eta_min = 0.0001  # 最低学习率η_min
     # 余弦退火
     scheduler = CosineAnnealingLR(optimizer, T_max=T_max, eta_min=eta_min)
 

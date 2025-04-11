@@ -6,13 +6,13 @@ from collections import OrderedDict
 
 MASTER_CONFIG = {
     'batch_size':32,          
-    'context_window': 256,  # 最大文本/token长度
+    'context_window': 128,  # 最大文本/token长度
     'vocab_size':6400  ,   # 词表长度
     'd_model': 512,        # token维度
     'epochs': 1,        # 训练次数
-    'log_interval': 100,      # 每10个 Iteration打印一次log
+    'log_interval': 1,      # 每10个 Iteration打印一次log
     'n_heads': 6,         # attention头数量
-    'n_layers': 8,        # 隐藏层的数量
+    'n_layers': 4,        # 隐藏层的数量
 }
 
 
@@ -43,7 +43,7 @@ class SwiGLU(nn.Module):
         self.beta = torch.randn(1, requires_grad=True)  
 
         # nn.Parameter用于指定某一层参数为可学习的，即本来不能通过训练更改参数，现在变成了可以经过训练来更新的参数。
-        self.beta = nn.Parameter(torch.ones(1))
+        self.beta = nn.Parameter(torch.ones(1, dtype=torch.float16))
         # 将随机数beta指定为一个名为beta的神经网络层
         self.register_parameter("beta", self.beta)
 
@@ -78,7 +78,7 @@ class RoPEMaskedAttentionHead(nn.Module):
         self.w_k = nn.Linear(config['d_model'], config['d_model'], bias=False)
         self.w_v = nn.Linear(config['d_model'], config['d_model'], bias=False)
         # 旋转编码矩阵
-        self.R = get_rotary_matrix(config['context_window'], config['d_model']).to(device)
+        self.R = get_rotary_matrix(config['context_window'], config['d_model']).to(device,dtype=torch.float16)
 
 
     def forward(self, x, return_attn_weights=False):
@@ -168,11 +168,19 @@ class Llama(nn.Module):
             nn.Linear(config['d_model'], config['vocab_size']),
         )
 
+        self.to(dtype=torch.float16)
+
     
     def forward(self, idx, targets=None):
-        x = self.embeddings(idx)
-        x = self.llama_blocks(x)
-        logits = self.ffn(x)
+
+        with torch.autocast(device_type='cpu', dtype=torch.float16):
+            x = self.embeddings(idx)
+            x = self.llama_blocks(x)
+            logits = self.ffn(x)
+
+        # x = self.embeddings(idx)
+        # x = self.llama_blocks(x)
+        # logits = self.ffn(x)
         # 推理
         if targets is None:
             return logits
