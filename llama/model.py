@@ -5,8 +5,8 @@ import numpy as np
 from collections import OrderedDict
 
 MASTER_CONFIG = {
-    'batch_size':32,          
-    'context_window': 128,  # 最大文本/token长度
+    'batch_size':16,          
+    'context_window': 300,  # 最大文本/token长度
     'vocab_size':6400  ,   # 词表长度
     'd_model': 512,        # token维度
     'epochs': 1,        # 训练次数

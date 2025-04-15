@@ -13,7 +13,6 @@ def generate(model, promote,config=MASTER_CONFIG, max_new_tokens=128):
     
 
     idx= torch.tensor(idx, dtype=torch.long, device=device)
-    print(idx.shape)
     for _ in range(max_new_tokens):
         # 输入截断
         logits = model(idx[:, -config['context_window']:])
@@ -39,5 +38,5 @@ if __name__=='__main__':
     model.load_state_dict(torch.load("model_weights.pth",map_location=torch.device('cpu')))
     model.eval()
 
-    res=generate(model,"你好")
+    res=generate(model,"注意力机制",max_new_tokens=200)
     print(res)

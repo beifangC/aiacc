@@ -33,7 +33,7 @@ class MiniMindTokenizer:
         token_ids: Union[int, List[int], "torch.Tensor", "tf.Tensor"],
         skip_special_tokens: bool = True,
     ) -> str:
-        return self.tokenizer.decode(token_ids, skip_special_tokens=skip_special_tokens, **kwargs)
+        return self.tokenizer.decode(token_ids, skip_special_tokens=skip_special_tokens)
     
 
 

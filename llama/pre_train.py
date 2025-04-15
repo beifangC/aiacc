@@ -47,7 +47,7 @@ if __name__=='__main__':
 
     optimizer = torch.optim.Adam(
         llama.parameters(),   
-        lr=0.1  
+        lr=0.001  
     )
 
     train_ds = PretrainDataset('pretrain_hq.jsonl', tokenizer, max_length=MASTER_CONFIG['context_window'])

@@ -2,3 +2,4 @@
 deeplearn/data/*
 .git
 *.pth
+*.pyc
