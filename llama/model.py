@@ -168,19 +168,12 @@ class Llama(nn.Module):
             nn.Linear(config['d_model'], config['vocab_size']),
         )
 
-        self.to(dtype=torch.float16)
 
     
     def forward(self, idx, targets=None):
-
-        with torch.autocast(device_type='cpu', dtype=torch.float16):
-            x = self.embeddings(idx)
-            x = self.llama_blocks(x)
-            logits = self.ffn(x)
-
-        # x = self.embeddings(idx)
-        # x = self.llama_blocks(x)
-        # logits = self.ffn(x)
+        x = self.embeddings(idx)
+        x = self.llama_blocks(x)
+        logits = self.ffn(x)
         # 推理
         if targets is None:
             return logits
