@@ -23,8 +23,10 @@ def generate(model, promote,config=MASTER_CONFIG, max_new_tokens=128):
         # 计算概率分布
         p = F.softmax(last_time_step_logits, dim=-1)
       
-        # 根据概率分布计算下一个token，这里使用 torch.multinomial做的是随机采样
-        idx_next = torch.multinomial(p, num_samples=1)
+        # 随机采样
+        # idx_next = torch.multinomial(p, num_samples=1)
+        # 贪心采样
+        idx_next = torch.argmax(p, dim=-1, keepdim=True)
     
         # 将新的idx通过张量拼接写入到解码序列中
         idx = torch.cat([idx, idx_next], dim=-1)
