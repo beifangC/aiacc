@@ -23,12 +23,11 @@ def train(model, optimizer, train_loader,scheduler=None, config=MASTER_CONFIG, p
         if scheduler:
             scheduler.step()
  
-        if 0 == 0:
+        if step % config['log_interval'] == 0:
             batch_time = time.time() - start_time
             if print_logs:
                 print(f"Epoch {1} | Step {step}/{total_set} | val loss {loss:.3f} | Time {batch_time:.3f}")
             start_time = time.time()
-        break
         # if scheduler:
         #     print("lr: ", scheduler.get_lr())
     return 

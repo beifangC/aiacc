@@ -10,13 +10,13 @@ MASTER_CONFIG = {
     'vocab_size':6400  ,   # 词表长度
     'd_model': 512,        # token维度
     'epochs': 1,        # 训练次数
-    'log_interval': 1,      # 每10个 Iteration打印一次log
+    'log_interval': 10,      # 每10个 Iteration打印一次log
     'n_heads': 6,         # attention头数量
     'n_layers': 4,        # 隐藏层的数量
 }
 
 
-device = torch.device("cpu")
+device = torch.device("cuda:0")
 
 # LayerNorm 一种
 class RMSNorm(nn.Module):
@@ -43,7 +43,7 @@ class SwiGLU(nn.Module):
         self.beta = torch.randn(1, requires_grad=True)  
 
         # nn.Parameter用于指定某一层参数为可学习的，即本来不能通过训练更改参数，现在变成了可以经过训练来更新的参数。
-        self.beta = nn.Parameter(torch.ones(1, dtype=torch.float16))
+        self.beta = nn.Parameter(torch.ones(1))
         # 将随机数beta指定为一个名为beta的神经网络层
         self.register_parameter("beta", self.beta)
 
